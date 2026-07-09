@@ -34,7 +34,7 @@ NEXT_PUBLIC_BASE_URL=https://твой-домен.com
 | `supabase/migration.sql`     | profiles + quotas + RPC — выполнить в SQL Editor                          |
 | `app/sitemap.ts`             | sitemap для SEO                                                           |
 
-## Авторизация (Supabase, magic link)
+## Авторизация (Supabase, magic link)1
 
 Поток: аноним (3/день, cookie) → лимит → вводит email → письмо со ссылкой →
 клик → `/auth/callback` → сессия в cookies → тариф free (5/день) → Pro (безлимит,
