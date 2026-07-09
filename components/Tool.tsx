@@ -65,6 +65,23 @@ export default function Tool({ initialFormula = "", initialContext = "" }: Props
     setTimeout(() => setCopied(false), 2000);
   }
 
+  const [proLoading, setProLoading] = useState(false);
+
+  async function goPro() {
+    setProLoading(true);
+    try {
+      const res = await fetch("/api/stripe/checkout", { method: "POST" });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        location.href = data.url;
+        return;
+      }
+      alert(data.message || "Payments are not set up yet.");
+    } finally {
+      setProLoading(false);
+    }
+  }
+
   async function sendMagicLink() {
     const res = await fetch("/api/auth/login", {
       method: "POST",
@@ -210,8 +227,8 @@ export default function Tool({ initialFormula = "", initialContext = "" }: Props
               <>
                 <h3>You&apos;ve used your 5 daily fixes</h3>
                 <p>Go unlimited with Pro — $9/mo, cancel anytime.</p>
-                <button className="btn-primary" onClick={() => (location.href = "/#pro")}>
-                  Go Pro — $9/mo
+                <button className="btn-primary" onClick={goPro} disabled={proLoading}>
+                  {proLoading ? "Redirecting…" : "Go Pro — $9/mo"}
                 </button>
               </>
             ) : (
