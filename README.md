@@ -20,19 +20,19 @@ NEXT_PUBLIC_BASE_URL=https://твой-домен.com
 
 ## Что внутри
 
-| Путь | Что |
-|------|-----|
-| `app/page.tsx` | Главная = инструмент (hero, разбор, примеры, FAQ) |
-| `app/fix/[slug]/page.tsx` | 10 программатик-SEO-страниц (volna 1 из ТЗ) |
-| `lib/seo-pages.ts` | Контент SEO-страниц — данные, не код; добавляй страницы здесь |
-| `app/api/analyze/route.ts` | Разбор: сессия → тариф → квота → LLM (или демо) → JSON |
-| `lib/analyze.ts` | Промпт из ТЗ + демо-анализатор |
-| `lib/supabase.ts` | Серверный и админ-клиенты Supabase (null в демо-режиме) |
-| `lib/quota.ts` | Квоты: anon 3/день, free 5/день, pro безлимит; Supabase RPC или in-memory |
-| `app/api/auth/*` | login (magic link), logout, me |
-| `app/auth/callback/route.ts` | Приём magic link (PKCE + token_hash) |
-| `supabase/migration.sql` | profiles + quotas + RPC — выполнить в SQL Editor |
-| `app/sitemap.ts` | sitemap для SEO |
+| Путь                         | Что                                                                       |
+| ---------------------------- | ------------------------------------------------------------------------- |
+| `app/page.tsx`               | Главная = инструмент (hero, разбор, примеры, FAQ)                         |
+| `app/fix/[slug]/page.tsx`    | 10 программатик-SEO-страниц (volna 1 из ТЗ)                               |
+| `lib/seo-pages.ts`           | Контент SEO-страниц — данные, не код; добавляй страницы здесь             |
+| `app/api/analyze/route.ts`   | Разбор: сессия → тариф → квота → LLM (или демо) → JSON                    |
+| `lib/analyze.ts`             | Промпт из ТЗ + демо-анализатор                                            |
+| `lib/supabase.ts`            | Серверный и админ-клиенты Supabase (null в демо-режиме)                   |
+| `lib/quota.ts`               | Квоты: anon 3/день, free 5/день, pro безлимит; Supabase RPC или in-memory |
+| `app/api/auth/*`             | login (magic link), logout, me                                            |
+| `app/auth/callback/route.ts` | Приём magic link (PKCE + token_hash)                                      |
+| `supabase/migration.sql`     | profiles + quotas + RPC — выполнить в SQL Editor                          |
+| `app/sitemap.ts`             | sitemap для SEO                                                           |
 
 ## Авторизация (Supabase, magic link)
 
@@ -47,4 +47,4 @@ NEXT_PUBLIC_BASE_URL=https://твой-домен.com
 ## Что осталось заглушено (доделать перед продом)
 
 1. **Stripe нет** → Checkout + webhook (`plan='pro'` в profiles) по разделу 5.4 ТЗ.
-2. **Аналитик
+2. \*\*Аналитик
