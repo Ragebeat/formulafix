@@ -145,7 +145,7 @@ function userMessage(formula: string, context: string) {
 }
 
 /** Устойчивое извлечение JSON: срезаем фенсы/болтовню, берём {...} */
-function extractJson(text: string): AnalyzeResult {
+export function extractJson(text: string): AnalyzeResult {
   const cleaned = text.replace(/```json/gi, "").replace(/```/g, "");
   const start = cleaned.indexOf("{");
   const end = cleaned.lastIndexOf("}");
