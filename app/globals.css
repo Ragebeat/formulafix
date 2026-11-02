@@ -114,6 +114,8 @@ textarea:focus { outline: none; border-color: var(--accent); }
 .copy-btn:hover { border-color: var(--accent); }
 
 .what-changed { color: var(--muted); font-size: 13px; }
+.card p + .what-changed { margin-top: 8px; }
+.modal .error-msg { text-align: center; }
 
 .low-confidence {
   background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3);
