@@ -32,7 +32,7 @@ With no API keys at all, the app runs in **demo mode**: a rule-based analyzer co
 | Payments | Stripe Checkout, Customer Portal, signed webhooks → `plan = 'pro'` |
 | LLM | Anthropic Messages API · OpenAI-compatible (`/chat/completions`): HF router, Groq, OpenRouter… |
 | SEO | 10 programmatic pages (`/fix/[slug]`), sitemap |
-| Quality | Vitest unit tests, `tsc --noEmit`, GitHub Actions CI; API-level test set (`scripts/run-testset.mjs`, 20 cases) |
+| Quality | ESLint (`next/core-web-vitals`), Vitest unit tests, `tsc --noEmit`, GitHub Actions CI; API-level test set (`scripts/run-testset.mjs`, 20 cases) |
 
 ## Code map
 
@@ -42,12 +42,13 @@ With no API keys at all, the app runs in **demo mode**: a rule-based analyzer co
 | `lib/analyze.ts` | Provider selection: Anthropic, any OpenAI-compatible API, or the demo analyzer |
 | `lib/llm/` | `prompt.ts` system prompt and user message · `providers.ts` HTTP clients · `parse.ts` JSON extraction |
 | `lib/demo-analyzer.ts` | Rule-based analyzer for demo mode, no API key needed |
+| `lib/caller.ts` | Who is calling: signed-in user and plan, or an anonymous visitor (cookie + hashed IP) |
 | `lib/quota.ts` | Tiers (anon 3/day, free 5/day, pro unlimited), RPC + in-memory fallback |
 | `lib/supabase.ts` | Server (user session) and admin clients; `null` when not configured |
 | `app/api/stripe/*` | Checkout, portal, webhook (signature verified) |
 | `supabase/migration.sql` | Tables, RLS, quota RPC |
 | `components/Tool.tsx` | The analyzer UI |
-| `tests/` | Unit tests for the demo analyzer, JSON extraction and quotas |
+| `tests/` | Unit tests for the demo analyzer, JSON extraction, quotas and caller resolution |
 
 ## Run locally
 

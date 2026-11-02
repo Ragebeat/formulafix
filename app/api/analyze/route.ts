@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { analyze } from "@/lib/analyze";
-import { checkAndIncrement, Tier } from "@/lib/quota";
-import { getServerSupabase, getAdminSupabase } from "@/lib/supabase";
-import { createHash, randomUUID } from "crypto";
+import { ANON_COOKIE, resolveCaller } from "@/lib/caller";
+import { checkAndIncrement } from "@/lib/quota";
 
 export async function POST(req: NextRequest) {
   let body: { formula?: string; context?: string; dialect?: string };
@@ -23,35 +22,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Who is calling: pro / free (from the Supabase session) or anonymous
-  let tier: Tier = "anon";
-  let quotaKey: string;
-  let ffid: string | undefined;
-  let isNewAnon = false;
-
-  const supabase = getServerSupabase();
-  const user = supabase ? (await supabase.auth.getUser()).data.user : null;
-
-  if (user) {
-    let plan = "free";
-    const admin = getAdminSupabase();
-    if (admin) {
-      const { data: prof } = await admin
-        .from("profiles")
-        .select("plan")
-        .eq("id", user.id)
-        .single();
-      if (prof?.plan) plan = prof.plan;
-    }
-    tier = plan === "pro" ? "pro" : "free";
-    quotaKey = "user:" + user.id;
-  } else {
-    ffid = req.cookies.get("ffid")?.value;
-    isNewAnon = !ffid;
-    if (!ffid) ffid = randomUUID();
-    const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "local";
-    quotaKey = "anon:" + createHash("sha256").update(ffid + "|" + ip).digest("hex");
-  }
+  const { tier, quotaKey, newAnonId } = await resolveCaller(req);
 
   const quota =
     process.env.TEST_MODE === "1"
@@ -85,8 +56,8 @@ export async function POST(req: NextRequest) {
         limit: quota.limit,
       },
     });
-    if (isNewAnon && ffid) {
-      res.cookies.set("ffid", ffid, {
+    if (newAnonId) {
+      res.cookies.set(ANON_COOKIE, newAnonId, {
         maxAge: 60 * 60 * 24 * 365,
         httpOnly: true,
         sameSite: "lax",

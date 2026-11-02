@@ -32,7 +32,7 @@ APIキーがなくても **デモモード** で動きます。ルールベー�
 | 決済 | Stripe Checkout、カスタマーポータル、署名検証付きWebhook → `plan = 'pro'` |
 | LLM | Anthropic Messages API／OpenAI互換API（HF router、Groq、OpenRouterなど） |
 | SEO | プログラマティックSEOページ10件（`/fix/[slug]`）、サイトマップ |
-| 品質 | Vitestの単体テスト、`tsc --noEmit`、GitHub Actions CI、APIレベルのテストセット（20件） |
+| 品質 | ESLint、Vitestの単体テスト、`tsc --noEmit`、GitHub Actions CI、APIレベルのテストセット（20件） |
 
 ## ローカルでの実行
 
