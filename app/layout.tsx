@@ -33,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <span>
               <Link href="/privacy">Privacy</Link>
               <Link href="/terms">Terms</Link>
+              <Link href="/legal/tokushoho">特定商取引法に基づく表記</Link>
             </span>
           </div>
         </footer>
