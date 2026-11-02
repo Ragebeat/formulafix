@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { extractJson } from "@/lib/analyze";
+import { extractJson } from "@/lib/llm/parse";
 
 const result = {
   verdict: "broken", error_type: "#N/A", whats_broken: "x", why: "y",

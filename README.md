@@ -39,7 +39,9 @@ With no API keys at all, the app runs in **demo mode**: a rule-based analyzer co
 | Path | What |
 |---|---|
 | `app/api/analyze/route.ts` | The request flow above |
-| `lib/analyze.ts` | System prompt, provider selection, LLM clients, JSON extraction, demo analyzer |
+| `lib/analyze.ts` | Provider selection: Anthropic, any OpenAI-compatible API, or the demo analyzer |
+| `lib/llm/` | `prompt.ts` system prompt and user message · `providers.ts` HTTP clients · `parse.ts` JSON extraction |
+| `lib/demo-analyzer.ts` | Rule-based analyzer for demo mode, no API key needed |
 | `lib/quota.ts` | Tiers (anon 3/day, free 5/day, pro unlimited), RPC + in-memory fallback |
 | `lib/supabase.ts` | Server (user session) and admin clients; `null` when not configured |
 | `app/api/stripe/*` | Checkout, portal, webhook (signature verified) |

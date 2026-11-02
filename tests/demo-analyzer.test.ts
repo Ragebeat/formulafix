@@ -1,61 +1,61 @@
 import { describe, expect, it } from "vitest";
-import { mockAnalyze } from "@/lib/analyze";
+import { demoAnalyze } from "@/lib/demo-analyzer";
 
-describe("mockAnalyze (offline demo analyzer)", () => {
+describe("demoAnalyze (offline demo analyzer)", () => {
   it("closes an unbalanced parenthesis", () => {
-    const r = mockAnalyze("=SUM(A1:A10");
+    const r = demoAnalyze("=SUM(A1:A10");
     expect(r.verdict).toBe("broken");
     expect(r.error_type).toBe("syntax");
     expect(r.fixed_formula).toBe("=SUM(A1:A10)");
   });
 
   it("does not invent a fix when there is an extra closing parenthesis", () => {
-    const r = mockAnalyze("=SUM(A1:A10))");
+    const r = demoAnalyze("=SUM(A1:A10))");
     expect(r.error_type).toBe("syntax");
     expect(r.fixed_formula).toBeNull();
   });
 
   it("corrects a misspelled function name (#NAME?)", () => {
-    const r = mockAnalyze("=VLOKUP(A2,B:C,2,FALSE)");
+    const r = demoAnalyze("=VLOKUP(A2,B:C,2,FALSE)");
     expect(r.error_type).toBe("#NAME?");
     expect(r.fixed_formula).toBe("=VLOOKUP(A2,B:C,2,FALSE)");
   });
 
   it("detects a VLOOKUP column index outside the range (#REF!)", () => {
-    const r = mockAnalyze("=VLOOKUP(A2,B:C,3,FALSE)");
+    const r = demoAnalyze("=VLOOKUP(A2,B:C,3,FALSE)");
     expect(r.error_type).toBe("#REF!");
     expect(r.fixed_formula).toBe("=VLOOKUP(A2,B:C,2,FALSE)");
   });
 
   it("supports ';' as the argument separator (European locales)", () => {
-    const r = mockAnalyze("=VLOOKUP(A2;Sheet2!A1:B20;5;FALSE)");
+    const r = demoAnalyze("=VLOOKUP(A2;Sheet2!A1:B20;5;FALSE)");
     expect(r.error_type).toBe("#REF!");
   });
 
   it("adds FALSE when VLOOKUP has no exact-match argument", () => {
-    const r = mockAnalyze("=VLOOKUP(A2,B:D,2)");
+    const r = demoAnalyze("=VLOOKUP(A2,B:D,2)");
     expect(r.error_type).toBe("logic");
     expect(r.fixed_formula).toBe("=VLOOKUP(A2,B:D,2,FALSE)");
   });
 
   it("wraps a literal division by zero in IFERROR", () => {
-    const r = mockAnalyze("=A1/0");
+    const r = demoAnalyze("=A1/0");
     expect(r.error_type).toBe("#DIV/0!");
     expect(r.fixed_formula).toBe("=IFERROR(A1/0,0)");
   });
 
   it("treats a cell-by-cell division as valid and points at the data", () => {
-    const r = mockAnalyze("=B2/C2");
+    const r = demoAnalyze("=B2/C2");
     expect(r.verdict).toBe("ok");
     expect(r.fixed_formula).toBeNull();
     expect(r.if_ok_suggestion).toContain("IFERROR");
   });
 
   it("accepts a formula without the leading '='", () => {
-    expect(mockAnalyze("SUMM(A1:A3)").fixed_formula).toBe("=SUM(A1:A3)");
+    expect(demoAnalyze("SUMM(A1:A3)").fixed_formula).toBe("=SUM(A1:A3)");
   });
 
   it("marks non-formula input as unparseable", () => {
-    expect(mockAnalyze("???").verdict).toBe("unparseable");
+    expect(demoAnalyze("???").verdict).toBe("unparseable");
   });
 });
