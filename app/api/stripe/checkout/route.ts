@@ -4,7 +4,7 @@ import { getStripe } from "@/lib/stripe";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-/** Создание Stripe Checkout-сессии для подписки Pro. Требует логина. */
+/** Creates a Stripe Checkout session for the Pro subscription. Requires sign-in. */
 export async function POST() {
   const stripe = getStripe();
   const price = process.env.STRIPE_PRICE_PRO_MONTHLY;

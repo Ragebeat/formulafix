@@ -4,9 +4,9 @@ export const metadata = {
 };
 
 /**
- * Обязательная страница для Stripe Japan (特定商取引法).
- * TODO перед активацией Stripe live: вписать реальное имя в 販売業者/運営責任者.
- * Адрес и телефон для 個人事業主 допустимо раскрывать по запросу (改正特商法).
+ * Required by Stripe Japan (特定商取引法, Specified Commercial Transactions Act).
+ * Before switching Stripe to live mode, fill in the real name for 販売業者/運営責任者.
+ * A sole proprietor (個人事業主) may disclose address and phone on request (改正特商法).
  */
 const rows: [string, string][] = [
   ["販売業者", "（氏名を記載）"],

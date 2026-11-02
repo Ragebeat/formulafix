@@ -4,7 +4,7 @@ import { getStripe } from "@/lib/stripe";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-/** Customer Portal — управление/отмена подписки. */
+/** Stripe Customer Portal: manage or cancel the subscription. */
 export async function POST() {
   const stripe = getStripe();
   if (!stripe) return NextResponse.json({ error: "not_configured" }, { status: 503 });

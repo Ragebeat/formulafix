@@ -34,9 +34,9 @@ Rules:
 type Provider = "anthropic" | "hf" | "compat" | "demo";
 
 /**
- * Выбор провайдера:
- *  LLM_PROVIDER=anthropic | hf | demo — принудительно;
- *  иначе: есть ANTHROPIC_API_KEY → anthropic; есть HF_TOKEN → hf; иначе demo.
+ * Provider selection:
+ *  LLM_PROVIDER=anthropic | hf | compat | demo forces a provider;
+ *  otherwise: ANTHROPIC_API_KEY → anthropic, LLM_BASE_URL + LLM_API_KEY → compat, HF_TOKEN → hf, else demo.
  */
 function pickProvider(): Provider {
   const forced = process.env.LLM_PROVIDER;
@@ -77,7 +77,7 @@ export async function analyze(
   return { result: mockAnalyze(formula), model: "demo" };
 }
 
-// ── Anthropic (прод) ──────────────────────────────────────────
+// Anthropic Messages API
 async function callAnthropic(formula: string, context: string, dialect: Dialect) {
   const model = process.env.LLM_MODEL || "claude-haiku-4-5-20251001";
   const res = await fetch("https://api.anthropic.com/v1/messages", {
@@ -103,8 +103,8 @@ async function callAnthropic(formula: string, context: string, dialect: Dialect)
   return { result: extractJson(text), model };
 }
 
-// ── Любой OpenAI-совместимый API ─────────────────────────────
-// HF-роутер, Groq, Gemini (OpenAI endpoint), OpenRouter и т.д.
+// Any OpenAI-compatible API
+// (Hugging Face router, Groq, Gemini's OpenAI endpoint, OpenRouter, ...)
 async function callOpenAICompat(
   baseUrl: string,
   apiKey: string,
@@ -144,7 +144,7 @@ function userMessage(formula: string, context: string) {
   return `User formula: ${formula}\nUser context: ${context || "none"}`;
 }
 
-/** Устойчивое извлечение JSON: срезаем фенсы/болтовню, берём {...} */
+/** Tolerant JSON extraction: strip code fences and extra text, keep the outer {...}. */
 export function extractJson(text: string): AnalyzeResult {
   const cleaned = text.replace(/```json/gi, "").replace(/```/g, "");
   const start = cleaned.indexOf("{");

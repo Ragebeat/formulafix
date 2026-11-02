@@ -6,8 +6,8 @@ import path from "path";
 const BASE = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
 /**
- * Отправка magic link на email.
- * Без Supabase (демо-режим) — сохраняем email в лид-лист.
+ * Sends a magic link to the given email.
+ * Without Supabase (demo mode) the email is saved to a local lead list.
  */
 export async function POST(req: NextRequest) {
   let body: { email?: string };

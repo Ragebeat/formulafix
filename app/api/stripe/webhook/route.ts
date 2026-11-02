@@ -4,8 +4,8 @@ import { getAdminSupabase } from "@/lib/supabase";
 import type Stripe from "stripe";
 
 /**
- * Stripe webhook: оплата → plan='pro'; отмена подписки → plan='free'.
- * В Stripe Dashboard подписать события:
+ * Stripe webhook: payment → plan='pro'; subscription cancelled → plan='free'.
+ * Events to subscribe to in the Stripe Dashboard:
  *   checkout.session.completed, customer.subscription.deleted
  */
 export async function POST(req: NextRequest) {

@@ -3,10 +3,10 @@ import { getServerSupabase } from "@/lib/supabase";
 import type { EmailOtpType } from "@supabase/supabase-js";
 
 /**
- * Callback после клика по magic link.
- *  - PKCE:       ?code=...                     (тот же браузер)
- *  - token_hash: ?token_hash=...&type=email    (любой браузер; шаблон
- *    письма Supabase должен использовать TokenHash)
+ * Callback after the user clicks the magic link.
+ *  - PKCE:       ?code=...                     (same browser)
+ *  - token_hash: ?token_hash=...&type=email    (any browser; the Supabase
+ *    email template must use TokenHash)
  */
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);

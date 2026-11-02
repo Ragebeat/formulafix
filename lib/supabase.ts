@@ -3,9 +3,9 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 
 /**
- * Supabase-клиент с сессией пользователя (читает auth-cookies запроса).
- * Возвращает null, если Supabase не сконфигурирован — приложение
- * продолжает работать в демо-режиме без авторизации.
+ * Supabase client bound to the user's session (reads the request's auth cookies).
+ * Returns null when Supabase is not configured, so the app keeps
+ * working in demo mode without sign-in.
  */
 export function getServerSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -24,7 +24,7 @@ export function getServerSupabase() {
             store.set(name, value, options as Parameters<typeof store.set>[2])
           );
         } catch {
-          // вызов из Server Component без права писать cookies — игнорируем
+          // Called from a Server Component, which cannot set cookies: safe to ignore
         }
       },
     },
@@ -32,8 +32,8 @@ export function getServerSupabase() {
 }
 
 /**
- * Админ-клиент (service role) — только для серверных операций.
- * НИКОГДА не использовать в клиентском коде.
+ * Admin client (service role), for server-side operations only.
+ * Never use it in client code.
  */
 let adminClient: SupabaseClient | null | undefined;
 export function getAdminSupabase(): SupabaseClient | null {

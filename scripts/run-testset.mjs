@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 /**
- * Прогон тестового набора из ТЗ (раздел 10) через /api/analyze.
- * Запуск:
- *   1. В .env.local добавь TEST_MODE=1 (байпас квоты), перезапусти сервер
+ * Runs the 20-case test set against /api/analyze.
+ * Usage:
+ *   1. Set TEST_MODE=1 in .env.local (bypasses the quota) and restart the server
  *   2. node scripts/run-testset.mjs [http://localhost:3000]
- * Результат: таблица в консоли + test-results.json
+ * Output: a table in the console and test-results.json
  */
 
 const BASE = process.argv[2] || "http://localhost:3001";
-const DELAY_MS = 5000;      // пауза между кейсами (free-тир HF режет частые запросы)
-const RETRY_WAIT_MS = 20000; // ожидание перед повтором после 429/502
+const DELAY_MS = 5000;      // pause between cases (free tiers rate-limit bursts)
+const RETRY_WAIT_MS = 20000; // wait before retrying after a 429/502
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function callApi(c) {
@@ -24,7 +24,7 @@ async function callApi(c) {
 
 const longIf = "=IF(A1>90,\"A\"," + "IF(A1>80,\"B\",".repeat(30) + "\"F\"" + ")".repeat(31);
 
-// expect.verdict / expect.error — массивы допустимых значений; null в error = "не проверяем"
+// expect.verdict / expect.error: lists of accepted values; error [null] means "not checked"
 const CASES = [
   { n: 1,  f: '=VLOOKUP(A2,B:C,3,FALSE)', ctx: "", d: "excel", expect: { verdict: ["broken"], error: ["#REF!"] } },
   { n: 2,  f: '=VLOOKUP(A2,Sheet2!A:B,2)', ctx: "sometimes returns values that don't match", d: "excel", expect: { verdict: ["broken"], error: ["logic"] } },
@@ -52,7 +52,7 @@ function check(c, r) {
   const v = String(r.verdict || "").trim().toLowerCase();
   const vOk = c.expect.verdict.includes(v);
   const eOk = c.expect.error.includes(r.error_type) || c.expect.error.includes(null);
-  // если error-лист состоит только из null — проверяем лишь вердикт
+  // if the error list is only [null], check the verdict alone
   const strictE = c.expect.error.some((x) => x !== null);
   return vOk && (!strictE || c.expect.error.includes(r.error_type) || c.expect.verdict.length > 1 && r.verdict === "ok");
 }
@@ -104,9 +104,9 @@ for (const c of CASES) {
   if (c !== CASES[CASES.length - 1]) await sleep(DELAY_MS);
 }
 
-console.log(`\nRESULT: ${pass}/${CASES.length} passed  (порог из ТЗ: 18/20)`);
+console.log(`\nRESULT: ${pass}/${CASES.length} passed  (target: 18/20)`);
 console.log(`Model: ${results.find((r) => r.model)?.model || "?"}`);
 
 const fs = await import("fs");
 fs.writeFileSync("test-results.json", JSON.stringify(results, null, 2));
-console.log("Отчёт: test-results.json");
+console.log("Report: test-results.json");

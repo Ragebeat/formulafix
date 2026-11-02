@@ -3,19 +3,19 @@ import { getAdminSupabase } from "./supabase";
 export type Tier = "anon" | "free" | "pro";
 
 const LIMITS: Record<Exclude<Tier, "pro">, number> = {
-  anon: 3, // без авторизации
-  free: 5, // вошёл по magic link
+  anon: 3, // not signed in
+  free: 5, // signed in with a magic link
 };
 
 export interface QuotaResult {
   allowed: boolean;
   used: number;
-  limit: number | null; // null = безлимит (pro)
+  limit: number | null; // null = unlimited (pro)
 }
 
 /**
- * Дневная квота. С Supabase — атомарный RPC increment_quota
- * (см. supabase/migration.sql). Без него — in-memory фолбэк (демо).
+ * Daily quota. With Supabase: the atomic increment_quota RPC
+ * (see supabase/migration.sql). Without it: an in-memory fallback (demo).
  */
 export async function checkAndIncrement(key: string, tier: Tier): Promise<QuotaResult> {
   if (tier === "pro") return { allowed: true, used: 0, limit: null };
@@ -37,7 +37,7 @@ export async function checkAndIncrement(key: string, tier: Tier): Promise<QuotaR
   return memoryQuota(key, limit);
 }
 
-// ── in-memory фолбэк ──────────────────────────────────────────
+// In-memory fallback
 const store = new Map<string, { date: string; used: number }>();
 
 function memoryQuota(key: string, limit: number): QuotaResult {

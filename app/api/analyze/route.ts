@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Кто пришёл: pro / free (по сессии Supabase) / аноним
+  // Who is calling: pro / free (from the Supabase session) or anonymous
   let tier: Tier = "anon";
   let quotaKey: string;
   let ffid: string | undefined;

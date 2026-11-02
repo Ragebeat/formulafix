@@ -1,7 +1,7 @@
--- FormulaFix: миграция Supabase
--- Выполнить в Supabase Dashboard → SQL Editor (один раз)
+-- FormulaFix: Supabase schema
+-- Run once in Supabase Dashboard → SQL Editor
 
--- ── Профили (создаются автоматически при регистрации) ────────
+-- Profiles (created automatically on sign-up)
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   email text,
@@ -16,7 +16,7 @@ create policy "read own profile"
   on public.profiles for select
   using (auth.uid() = id);
 
--- Триггер: новая запись в auth.users → профиль
+-- Trigger: new row in auth.users → profile
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql security definer set search_path = public
@@ -34,7 +34,7 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
 
--- ── Дневные квоты ─────────────────────────────────────────────
+-- Daily quotas
 create table if not exists public.quotas (
   key text not null,
   date date not null default current_date,
@@ -42,10 +42,10 @@ create table if not exists public.quotas (
   primary key (key, date)
 );
 
--- RLS включён, политик нет → доступ только через service role
+-- RLS on and no policies: access only through the service role
 alter table public.quotas enable row level security;
 
--- Атомарный инкремент: возвращает новое used или -1 при превышении лимита
+-- Atomic increment: returns the new count, or -1 when the limit is reached
 create or replace function public.increment_quota(p_key text, p_limit int)
 returns int
 language plpgsql security definer set search_path = public
@@ -67,6 +67,6 @@ begin
 end;
 $$;
 
--- Чистка старых квот (опционально: включить pg_cron в Dashboard → Extensions)
+-- Cleanup of old quotas (optional: enable pg_cron in Dashboard → Extensions)
 -- select cron.schedule('purge-quotas', '0 3 * * *',
 --   $$delete from public.quotas where date < current_date - 7$$);
